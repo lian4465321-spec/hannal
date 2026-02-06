@@ -1,753 +1,247 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>한날</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>한날</title>
 
-  <style>
-    html, body { height: 100%; }
-    html { height: -webkit-fill-available; }
+<style>
+html,body{margin:0;height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
+  background:#f7f5f2;
+  color:rgba(0,0,0,.88);
+  line-height:1.85;
+  overflow-y:auto;
+  overscroll-behavior-y:none;
+  scroll-behavior:smooth;
+}
 
-    :root{
-      --bg: #f7f5f2;
-      --text: rgba(0,0,0,0.88);
-      --muted: rgba(0,0,0,0.56);
-      --muted2: rgba(0,0,0,0.42);
+/* ===== 프레임 ===== */
+body::before{
+  content:"";
+  position:fixed;
+  top:calc(8px + env(safe-area-inset-top));
+  bottom:calc(8px + env(safe-area-inset-bottom));
+  left:calc(12px + env(safe-area-inset-left));
+  right:calc(12px + env(safe-area-inset-right));
+  border:1px solid rgba(34,34,34,.12);
+  border-radius:12px;
+  pointer-events:none;
+  z-index:50;
+}
 
-      --frame: rgba(34,34,34,0.12);
+/* ===== 페이지 ===== */
+.page{
+  height:100svh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.container{
+  width:100%;
+  max-width:420px;
+  padding:20px;
+  box-sizing:border-box;
+}
 
-      --field-bg: rgba(255,255,255,0.60);
-      --field-border: rgba(0,0,0,0.12);
+/* ===== Intro ===== */
+.intro{text-align:center}
+.brand{font-size:30px;letter-spacing:1px}
+.tagline{font-size:14px;color:rgba(0,0,0,.56);margin-top:10px}
+.scroll-hint{margin-top:40px;font-size:12px;color:rgba(0,0,0,.42)}
 
-      --btn-bg: rgba(0,0,0,0.07);
-      --btn-bg2: rgba(0,0,0,0.04);
-      --btn-text: rgba(0,0,0,0.86);
-      --btn-text2: rgba(0,0,0,0.76);
+/* ===== 상단 버튼 ===== */
+.topRight{
+  position:fixed;
+  top:14px;
+  right:14px;
+  z-index:60;
+}
+.chip{
+  border:0;
+  padding:10px 14px;
+  border-radius:999px;
+  font-size:12px;
+  background:rgba(0,0,0,.05);
+}
 
-      --radius: 12px;
-      --frameInsetX: 12px; /* 좌우 */
-      --frameInsetY: 8px;  /* ✅ 위/아래를 바깥쪽(덜 띄움) */
-    }
+/* ===== Register ===== */
+#pageRegister .container{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.register-title{text-align:center;font-size:15px;color:rgba(0,0,0,.56);margin-bottom:18px}
+.birth-row{display:flex;justify-content:space-between;gap:8px}
+.birth-item{display:flex;align-items:center;gap:4px}
+.birth-item input{
+  width:56px;
+  padding:10px;
+  text-align:center;
+  border-radius:10px;
+  border:1px solid rgba(0,0,0,.12);
+  font-size:16px;
+}
+.actions{margin-top:14px;display:grid;gap:10px}
+button.primary,button.secondary{
+  padding:12px;
+  border-radius:12px;
+  border:0;
+  font-size:15px;
+}
+button.primary{background:rgba(0,0,0,.07)}
+button.secondary{background:rgba(0,0,0,.04)}
+.small{text-align:center;font-size:12px;color:rgba(0,0,0,.42);margin-top:10px}
 
-    @media (prefers-color-scheme: dark) {
-      :root{
-        --bg: #11110f;
-        --text: rgba(255,255,255,0.92);
-        --muted: rgba(255,255,255,0.62);
-        --muted2: rgba(255,255,255,0.45);
-        --frame: rgba(255,255,255,0.12);
+/* ===== Fortune ===== */
+.fortune{text-align:center}
+.date{font-size:14px;color:rgba(0,0,0,.56)}
+.score{margin-top:10px;font-size:18px}
+.score-desc{font-size:14px;color:rgba(0,0,0,.56);margin-top:6px}
+.fortune-text{margin-top:90px;font-size:17px}
+.direction{margin-top:90px}
+.direction-head{color:rgba(0,0,0,.56);margin-bottom:10px}
+.mini-link{margin-top:60px;font-size:12px;color:rgba(0,0,0,.42)}
+.mini-link button{border:0;background:none;text-decoration:underline}
 
-        --field-bg: rgba(255,255,255,0.06);
-        --field-border: rgba(255,255,255,0.14);
-
-        --btn-bg: rgba(255,255,255,0.10);
-        --btn-bg2: rgba(255,255,255,0.07);
-        --btn-text: rgba(255,255,255,0.92);
-        --btn-text2: rgba(255,255,255,0.85);
-      }
-    }
-
-    :root[data-theme="light"]{
-      --bg: #f7f5f2;
-      --text: rgba(0,0,0,0.88);
-      --muted: rgba(0,0,0,0.56);
-      --muted2: rgba(0,0,0,0.42);
-      --frame: rgba(34,34,34,0.12);
-
-      --field-bg: rgba(255,255,255,0.60);
-      --field-border: rgba(0,0,0,0.12);
-
-      --btn-bg: rgba(0,0,0,0.07);
-      --btn-bg2: rgba(0,0,0,0.04);
-      --btn-text: rgba(0,0,0,0.86);
-      --btn-text2: rgba(0,0,0,0.76);
-    }
-    :root[data-theme="dark"]{
-      --bg: #11110f;
-      --text: rgba(255,255,255,0.92);
-      --muted: rgba(255,255,255,0.62);
-      --muted2: rgba(255,255,255,0.45);
-      --frame: rgba(255,255,255,0.12);
-
-      --field-bg: rgba(255,255,255,0.06);
-      --field-border: rgba(255,255,255,0.14);
-
-      --btn-bg: rgba(255,255,255,0.10);
-      --btn-bg2: rgba(255,255,255,0.07);
-      --btn-text: rgba(255,255,255,0.92);
-      --btn-text2: rgba(255,255,255,0.85);
-    }
-
-    body{
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.85;
-
-      overflow-y: auto;
-      overscroll-behavior-y: none;
-      -webkit-overflow-scrolling: touch;
-
-      scroll-behavior: smooth;
-    }
-
-    /* ✅ 화면(뷰포트) 테두리 프레임 */
-    body::before{
-      content:"";
-      position: fixed;
-      pointer-events: none;
-      z-index: 50;
-
-      top: calc(var(--frameInsetY) + env(safe-area-inset-top));
-      bottom: calc(var(--frameInsetY) + env(safe-area-inset-bottom));
-      left: calc(var(--frameInsetX) + env(safe-area-inset-left));
-      right: calc(var(--frameInsetX) + env(safe-area-inset-right));
-
-      border: 1px solid var(--frame);
-      border-radius: var(--radius);
-    }
-
-    .page{
-      height: calc(var(--vh, 1vh) * 100);
-      min-height: 100svh;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    @supports (-webkit-touch-callout: none) {
-      .page{ min-height: -webkit-fill-available; }
-    }
-
-    .container{
-      width: 100%;
-      max-width: 420px;
-      margin: 0 auto;
-
-      padding-left: calc(20px + env(safe-area-inset-left));
-      padding-right: calc(20px + env(safe-area-inset-right));
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
-
-      box-sizing: border-box;
-    }
-
-    /* Intro */
-    .intro{ text-align:center; }
-    .brand{ font-size:30px; font-weight:500; letter-spacing:1px; }
-    .tagline{ font-size:14px; color: var(--muted); margin-top:10px; }
-    .scroll-hint{ margin-top:40px; font-size:12px; color: var(--muted2); }
-
-    /* ✅ 시작화면 우측 상단 버튼 */
-    .topRight{
-      position: fixed;
-      z-index: 60;
-      top: calc(14px + env(safe-area-inset-top));
-      right: calc(14px + env(safe-area-inset-right));
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .chip{
-      border: 0;
-      border-radius: 999px;
-      padding: 10px 12px;
-      font-size: 12px;
-      cursor: pointer;
-      background: var(--btn-bg2);
-      color: var(--btn-text2);
-    }
-    .chip:active{ opacity: 0.86; }
-
-    /* Register */
-    .register{ text-align:left; }
-    .register-title{
-      text-align:center;
-      font-size:15px;
-      color: var(--muted);
-      margin-bottom:18px;
-    }
-
-    /* ✅ 입력 폼을 화면 정중앙 */
-    #pageRegister .container{
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .birth-row{
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap:8px;
-      margin-bottom:14px;
-    }
-    .birth-item{ display:flex; align-items:center; gap:4px; }
-    .birth-item input{
-      width: 56px;
-      padding: 10px 8px;
-      text-align:center;
-      border-radius: 10px;
-      border: 1px solid var(--field-border);
-      background: var(--field-bg);
-      color: var(--text);
-      font-size: 16px; /* iOS 줌 방지 */
-      outline:none;
-      box-sizing:border-box;
-    }
-    .birth-item.time input{ width:52px; }
-    .birth-item span{ font-size:13px; color: var(--muted); white-space:nowrap; }
-
-    .time-unknown{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      justify-content:center;
-      margin-bottom:12px;
-      font-size:14px;
-      color: var(--muted);
-    }
-    .time-unknown label{ cursor:pointer; }
-
-    .actions{ display:grid; gap:10px; margin-top:10px; }
-    button.primary, button.secondary{
-      width:100%;
-      border:0;
-      border-radius:12px;
-      padding:12px 14px;
-      font-size:15px;
-      cursor:pointer;
-      transition: opacity 220ms ease;
-    }
-    button.primary{ background: var(--btn-bg); color: var(--btn-text); }
-    button.secondary{ background: var(--btn-bg2); color: var(--btn-text2); }
-    button.primary:active, button.secondary:active{ opacity:0.86; }
-
-    .small{ text-align:center; font-size:12px; color: var(--muted2); margin-top:10px; }
-
-    .fade-in{ opacity:0; transform: translateY(8px); transition: opacity 520ms ease, transform 520ms ease; }
-    .fade-in.show{ opacity:1; transform: translateY(0); }
-
-    /* Fortune */
-    .fortune{
-      text-align:center;
-      padding-top: 8vh;
-      padding-bottom: 8vh;
-      box-sizing: border-box;
-    }
-    .date{ font-size:14px; color: var(--muted); }
-    .score{ font-size:18px; margin-top:10px; }
-    .score-desc{ font-size:14px; color: var(--muted); margin-top:6px; }
-
-    .fortune-text{ margin-top: 90px; font-size:17px; }
-    .fortune-text p{ margin:0 0 26px 0; }
-
-    .direction{ margin-top: 90px; font-size:15px; color: var(--text); }
-    .direction-head{ margin-bottom: 12px; color: var(--muted); }
-    .direction-body{ line-height:1.9; }
-
-    .mini-link{
-      margin-top: 70px;
-      font-size: 12px;
-      color: var(--muted2);
-    }
-    .mini-link button{
-      background: transparent;
-      border:0;
-      padding:0;
-      text-decoration: underline;
-      color: var(--muted);
-      cursor:pointer;
-      font-size:12px;
-    }
-
-    /* End */
-    .ending{ text-align:center; font-size:13px; color: var(--muted2); letter-spacing:1px; }
-
-    .hidden{ display:none !important; }
-  </style>
+/* ===== 공통 ===== */
+.hidden{display:none!important}
+</style>
 </head>
 
 <body>
-  <div class="topRight">
-    <button class="chip" id="themeBtn"></button>
+
+<div class="topRight">
+  <button class="chip" id="themeBtn">다크모드</button>
+</div>
+
+<section class="page" id="pageIntro">
+  <div class="container intro">
+    <div class="brand">한날</div>
+    <div class="tagline">nothing more is needed</div>
+    <div class="scroll-hint">아래로 스크롤</div>
   </div>
+</section>
 
-  <!-- 1) Intro -->
-  <section class="page" id="pageIntro">
-    <div class="container intro">
-      <div class="brand">한날</div>
-      <div class="tagline">nothing more is needed</div>
-      <div class="scroll-hint">아래로 스크롤</div>
+<section class="page" id="pageRegister">
+  <div class="container">
+    <div class="register-title" id="registerTitle">생년월일시를 한 번만 적어두면 됩니다.</div>
+    <form id="registerForm">
+      <div class="birth-row">
+        <div class="birth-item"><input id="year" placeholder="1999"><span>년</span></div>
+        <div class="birth-item"><input id="month" placeholder="07"><span>월</span></div>
+        <div class="birth-item"><input id="day" placeholder="21"><span>일</span></div>
+        <div class="birth-item"><input id="hour" placeholder="15"><span>시</span></div>
+      </div>
+      <div class="actions">
+        <button class="primary">저장하고 오늘 보기</button>
+        <button type="button" class="secondary hidden" id="cancelBtn">그대로 둘게요</button>
+      </div>
+      <div class="small">저장은 이 기기 안에만 됩니다.</div>
+    </form>
+  </div>
+</section>
+
+<section class="page hidden" id="pageFortune">
+  <div class="container fortune">
+    <div class="date" id="todayDate"></div>
+    <div class="score">오늘의 흐름 점수 <strong id="score"></strong>점</div>
+    <div class="score-desc" id="scoreDesc"></div>
+    <div class="fortune-text">
+      <p id="line1"></p>
+      <p id="line2"></p>
     </div>
-  </section>
-
-  <!-- 2) Register -->
-  <section class="page" id="pageRegister">
-    <div class="container register">
-      <div class="register-title" id="registerTitle">생년월일시를 한 번만 적어두면 됩니다.</div>
-
-      <form id="registerForm" class="fade-in">
-        <div class="birth-row">
-          <div class="birth-item">
-            <input id="year" inputmode="numeric" placeholder="1999" maxlength="4" required />
-            <span>년</span>
-          </div>
-          <div class="birth-item">
-            <input id="month" inputmode="numeric" placeholder="07" maxlength="2" required />
-            <span>월</span>
-          </div>
-          <div class="birth-item">
-            <input id="day" inputmode="numeric" placeholder="21" maxlength="2" required />
-            <span>일</span>
-          </div>
-          <div class="birth-item time">
-            <input id="hour" inputmode="numeric" placeholder="15" maxlength="2" />
-            <span>시</span>
-          </div>
-        </div>
-
-        <div class="time-unknown">
-          <input type="checkbox" id="unknownTime" />
-          <label for="unknownTime">출생시간 모름</label>
-        </div>
-
-        <div class="actions">
-          <button class="primary" type="submit" id="saveBtn">저장하고 오늘 보기</button>
-          <button class="secondary hidden" type="button" id="cancelBtn">그대로 둘게요</button>
-        </div>
-
-        <div class="small">저장은 이 기기(브라우저)에만 됩니다.</div>
-      </form>
+    <div class="direction">
+      <div class="direction-head">오늘은</div>
+      <div id="direction"></div>
     </div>
-  </section>
-
-  <!-- 3) Fortune (저장 전 숨김) -->
-  <section class="page hidden" id="pageFortune">
-    <div class="container fortune">
-      <div class="date" id="todayDate"></div>
-
-      <div class="score">
-        오늘의 흐름 점수 <strong id="score"></strong>점
-      </div>
-      <div class="score-desc" id="scoreDesc"></div>
-
-      <div class="fortune-text">
-        <p id="line1"></p>
-        <p id="line2"></p>
-      </div>
-
-      <div class="direction">
-        <div class="direction-head">오늘은</div>
-        <div class="direction-body" id="direction"></div>
-      </div>
-
-      <div class="mini-link">
-        <button type="button" id="editBtn">정보 바꾸기</button>
-      </div>
+    <div class="mini-link">
+      <button id="editBtn">정보 바꾸기</button>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- 4) End (저장 전 숨김) -->
-  <section class="page hidden" id="pageEnd">
-    <div class="container ending">HANNAL</div>
-  </section>
+<section class="page hidden" id="pageEnd">
+  <div class="container" style="text-align:center;font-size:13px;color:rgba(0,0,0,.42)">HANNAL</div>
+</section>
 
-  <script>
-    /*********************************************************
-     * iOS 최적화: 실제 뷰포트 높이를 --vh로 반영
-     *********************************************************/
-    function setVH() {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    }
-    setVH();
-    window.addEventListener('resize', setVH);
+<script>
+/* ===== 페이지 전환 ===== */
+const pages=[pageIntro,pageRegister,pageFortune,pageEnd];
+let isAnimating=false,lastMoveAt=0;
 
-    /*********************************************************
-     * 테마 버튼: 현재 밝으면 "다크모드", 어두우면 "라이트모드"
-     *********************************************************/
-    const THEME_KEY = "hannal_theme";
-    const root = document.documentElement;
-    const themeBtn = document.getElementById("themeBtn");
+function activePages(){
+  return pages.filter(p=>!p.classList.contains("hidden") && p.style.display!=="none");
+}
+function currentIndex(){
+  const aps=activePages();
+  let best=0,dist=1e9;
+  aps.forEach((p,i)=>{
+    const d=Math.abs(p.offsetTop-window.scrollY);
+    if(d<dist){dist=d;best=i}
+  });
+  return best;
+}
+function goTo(i){
+  const aps=activePages();
+  if(!aps[i])return;
+  isAnimating=true;
+  aps[i].scrollIntoView({behavior:"smooth"});
+  setTimeout(()=>isAnimating=false,1200);
+}
+function intent(dir){
+  const now=Date.now();
+  if(isAnimating||now-lastMoveAt<1400)return;
+  lastMoveAt=now;
+  goTo(currentIndex()+dir);
+}
+window.addEventListener("wheel",e=>{
+  e.preventDefault();
+  intent(e.deltaY>0?1:-1);
+},{passive:false});
+let sy=null;
+window.addEventListener("touchstart",e=>sy=e.touches[0].clientY,{passive:true});
+window.addEventListener("touchend",e=>{
+  const dy=e.changedTouches[0].clientY-sy;
+  if(Math.abs(dy)>35)intent(dy<0?1:-1);
+},{passive:true});
 
-    function getEffectiveScheme(){
-      const forced = root.getAttribute("data-theme");
-      if (forced === "dark" || forced === "light") return forced;
-      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    }
-    function updateThemeButton(){
-      const now = getEffectiveScheme();
-      themeBtn.textContent = (now === "dark") ? "라이트모드" : "다크모드";
-    }
-    function setTheme(theme){
-      root.setAttribute("data-theme", theme);
-      localStorage.setItem(THEME_KEY, theme);
-      updateThemeButton();
-    }
+/* ===== 운세 ===== */
+function today(){
+  const d=new Date();
+  todayDate.innerText=`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
+  score.innerText=60+Math.floor(Math.random()*20);
+  scoreDesc.innerText="크게 흔들리지 않는 흐름인 것 같습니다.";
+  line1.innerText="오늘은 조용한 리듬이 어울리는 날인 것 같습니다.";
+  line2.innerText="서두르지 않아도 흐름이 이어질 것 같습니다.";
+  direction.innerText="유지하는 선택이 편할 것 같습니다.";
+}
 
-    const savedTheme = localStorage.getItem(THEME_KEY);
-    if (savedTheme === "dark" || savedTheme === "light") root.setAttribute("data-theme", savedTheme);
-    updateThemeButton();
+/* ===== 저장 / 편집 ===== */
+registerForm.addEventListener("submit",e=>{
+  e.preventDefault();
+  pageRegister.classList.add("hidden");
+  pageRegister.style.display="none";
+  pageFortune.classList.remove("hidden");
+  pageEnd.classList.remove("hidden");
+  today();
+  lastMoveAt=0;
+});
+editBtn.addEventListener("click",()=>{
+  pageRegister.style.display="flex";
+  pageRegister.classList.remove("hidden");
+  cancelBtn.classList.remove("hidden");
+  pageRegister.scrollIntoView({behavior:"smooth"});
+});
+cancelBtn.addEventListener("click",()=>{
+  pageRegister.classList.add("hidden");
+  pageRegister.style.display="none";
+  cancelBtn.classList.add("hidden");
+  pageFortune.scrollIntoView({behavior:"smooth"});
+});
+</script>
 
-    const mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
-    if (mq && mq.addEventListener) mq.addEventListener("change", updateThemeButton);
-
-    themeBtn.addEventListener("click", ()=>{
-      const now = getEffectiveScheme();
-      setTheme(now === "dark" ? "light" : "dark");
-    });
-
-    /*********************************************************
-     * 페이지 전환: "움직이려는 시도"만 있으면 즉시 다음/이전으로
-     * - 활성화된(숨김이 아닌) 페이지들만 대상으로 이동
-     * - 속도: 조금 느리게
-     *********************************************************/
-    const pages = [
-      document.getElementById("pageIntro"),
-      document.getElementById("pageRegister"),
-      document.getElementById("pageFortune"),
-      document.getElementById("pageEnd"),
-    ];
-
-    function activePages(){
-      return pages.filter(p => !p.classList.contains("hidden"));
-    }
-
-    let isAnimating = false;
-    let lastMoveAt = 0;
-
-    function currentPageIndex(){
-      const aps = activePages();
-      const y = window.scrollY + window.innerHeight * 0.25;
-      let best = 0;
-      let bestDist = Infinity;
-      aps.forEach((sec, i)=>{
-        const top = sec.offsetTop;
-        const dist = Math.abs(top - y);
-        if (dist < bestDist){ bestDist = dist; best = i; }
-      });
-      return best;
-    }
-
-    function goToPage(i){
-      const aps = activePages();
-      const clamped = Math.max(0, Math.min(i, aps.length - 1));
-      isAnimating = true;
-      aps[clamped].scrollIntoView({ behavior: "smooth", block: "start" });
-      setTimeout(()=>{ isAnimating = false; }, 850); /* ✅ 조금 느리게 */
-    }
-
-    function handleIntent(dir){
-      const now = Date.now();
-      if (isAnimating) return;
-      if (now - lastMoveAt < 900) return; /* ✅ 연속 이동도 살짝 느리게 */
-      lastMoveAt = now;
-
-      const idx = currentPageIndex();
-      goToPage(idx + dir);
-    }
-
-    function isTyping(){
-      const a = document.activeElement;
-      return a && (a.tagName === "INPUT" || a.tagName === "TEXTAREA" || a.isContentEditable);
-    }
-
-    window.addEventListener("wheel", (e)=>{
-      if (isTyping()) return;
-      if (Math.abs(e.deltaY) < 10) return;
-      e.preventDefault();
-      handleIntent(e.deltaY > 0 ? +1 : -1);
-    }, { passive: false });
-
-    let touchStartY = null;
-    window.addEventListener("touchstart", (e)=>{
-      if (isTyping()) return;
-      if (!e.touches || e.touches.length !== 1) return;
-      touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-
-    window.addEventListener("touchend", (e)=>{
-      if (isTyping()) return;
-      if (touchStartY === null) return;
-      const endY = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientY : touchStartY;
-      const dy = endY - touchStartY;
-      touchStartY = null;
-      if (Math.abs(dy) < 35) return;
-      handleIntent(dy < 0 ? +1 : -1);
-    }, { passive: true });
-
-    /*********************************************************
-     * 운세 생성(하루 고정) + 저장/편집
-     *********************************************************/
-    function pad2(n){ return String(n).padStart(2,"0"); }
-    function todayKey() {
-      const t = new Date();
-      return `${t.getFullYear()}${pad2(t.getMonth()+1)}${pad2(t.getDate())}`;
-    }
-    function todayKorean() {
-      const t = new Date();
-      return `${t.getFullYear()}년 ${t.getMonth()+1}월 ${t.getDate()}일`;
-    }
-    function seededHash(seed) {
-      let hash = 0;
-      for (let i=0;i<seed.length;i++){
-        hash = seed.charCodeAt(i) + ((hash<<5)-hash);
-        hash |= 0;
-      }
-      return Math.abs(hash);
-    }
-    function pick(arr, seed, salt){
-      const v = seededHash(seed + salt);
-      return arr[v % arr.length];
-    }
-    function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
-
-    function toJDN(y,m,d){
-      const a = Math.floor((14 - m)/12);
-      const y2 = y + 4800 - a;
-      const m2 = m + 12*a - 3;
-      return d + Math.floor((153*m2 + 2)/5) + 365*y2 + Math.floor(y2/4) - Math.floor(y2/100) + Math.floor(y2/400) - 32045;
-    }
-    function dayPillar(y,m,d){
-      const jdn = toJDN(y,m,d);
-      const stem = (jdn + 9) % 10;
-      return { stem };
-    }
-    function elementOfStem(stem){
-      const group = Math.floor(stem/2);
-      return ["WOOD","FIRE","EARTH","METAL","WATER"][group];
-    }
-    const GEN = { WOOD:"FIRE", FIRE:"EARTH", EARTH:"METAL", METAL:"WATER", WATER:"WOOD" };
-    const CTRL = { WOOD:"EARTH", EARTH:"WATER", WATER:"FIRE", FIRE:"METAL", METAL:"WOOD" };
-    function relation(a,b){
-      if (a===b) return "SAME";
-      if (GEN[a]===b) return "GENERATES";
-      if (CTRL[a]===b) return "CONTROLS";
-      if (GEN[b]===a) return "RECEIVES";
-      if (CTRL[b]===a) return "PRESSURED";
-      return "OTHER";
-    }
-    function decideTone(profile){
-      const { y,m,d } = profile;
-      const birthDM = elementOfStem(dayPillar(y,m,d).stem);
-      const t = new Date();
-      const todayEl = elementOfStem(dayPillar(t.getFullYear(), t.getMonth()+1, t.getDate()).stem);
-      const rel = relation(birthDM, todayEl);
-
-      if (rel === "RECEIVES") return "MOVE";
-      if (rel === "SAME") return "HOLD";
-      if (rel === "GENERATES") return "REST";
-      if (rel === "PRESSURED") return "REST";
-      if (rel === "CONTROLS") return "FLOW";
-      return "HOLD";
-    }
-    function scoreFromTone(seed, tone){
-      const r = seededHash(seed + "_SCORE");
-      const jitter = r % 8;
-      const ranges = { REST:[30,54], HOLD:[50,69], FLOW:[65,84], MOVE:[80,100] };
-      const [lo,hi] = ranges[tone] || [50,69];
-      const v = lo + (r % (hi-lo+1));
-      return clamp(v + (jitter - 3), 30, 100);
-    }
-    function scoreOneLine(score){
-      if (score >= 90) return "방향이 비교적 또렷한 편인 것 같습니다.";
-      if (score >= 75) return "움직인 만큼 반응이 돌아오는 편인 것 같습니다.";
-      if (score >= 60) return "크게 흔들리지 않는 흐름인 것 같습니다.";
-      if (score >= 45) return "무리하지 않으면 흐름이 안정될 것 같습니다.";
-      return "속도를 늦춰도 충분할 것 같습니다.";
-    }
-
-    const STATE = [
-      "천천히 흘러가도 괜찮을 것 같습니다.","오늘 하루는 급하지 않은 쪽에 가까울 것 같습니다.","조용한 리듬이 어색하지 않은 날인 것 같습니다.","힘을 주지 않아도 이어질 것 같습니다.",
-      "담담하게 지나가도 무리는 없을 것 같습니다.","오늘의 공기는 비교적 가벼운 편인 것 같습니다.","서두르지 않아도 흐름이 끊기지 않을 것 같습니다.","크게 흔들리지 않는 하루에 가까울 것 같습니다.",
-      "조심스럽게 움직여도 충분할 것 같습니다.","오늘은 여유가 남아 있는 편인 것 같습니다.","속도를 줄여도 어색하지 않을 것 같습니다.","무리하지 않으면 안정적으로 이어질 것 같습니다.",
-      "오늘은 소리가 크지 않은 날인 것 같습니다.","천천히 살펴봐도 늦지 않을 것 같습니다.","자연스러운 흐름이 유지될 것 같습니다.","오늘은 공백이 허용되는 하루인 것 같습니다.",
-      "가볍게 흘려보내도 괜찮을 것 같습니다.","조용한 선택이 잘 어울릴 것 같습니다.","오늘의 리듬은 느슨한 쪽에 가까울 것 같습니다.","크게 애쓰지 않아도 지나갈 것 같습니다.",
-      "부드럽게 이어지는 흐름인 것 같습니다.","오늘은 멈춤이 어색하지 않을 것 같습니다.","긴장을 풀어도 무리는 없을 것 같습니다.","오늘 하루는 밀도가 낮은 편인 것 같습니다.",
-      "서서히 움직여도 괜찮을 것 같습니다.","오늘은 조정이 가능한 날인 것 같습니다.","천천히 정리해도 충분할 것 같습니다.","소소한 흐름이 이어질 것 같습니다.",
-      "오늘은 크게 드러나지 않아도 괜찮을 것 같습니다.","여백이 남아 있는 하루인 것 같습니다.","가볍게 머물러도 어색하지 않을 것 같습니다.","오늘은 속도를 나중에 올려도 될 것 같습니다."
-    ];
-
-    const CHOICE = [
-      "선택을 줄여도 충분할 것 같습니다.","결론을 서두르지 않아도 괜찮을 것 같습니다.","지금 상태를 유지해도 무리는 없을 것 같습니다.","한 박자 늦춰도 괜찮을 것 같습니다.",
-      "굳이 앞서지 않아도 될 것 같습니다.","잠시 미뤄두는 선택도 괜찮을 것 같습니다.","지금은 더 보태지 않아도 충분할 것 같습니다.","방향을 크게 바꾸지 않아도 될 것 같습니다.",
-      "말을 아껴도 괜찮을 것 같습니다.","판단을 나중에 해도 늦지 않을 것 같습니다.","굳이 확답하지 않아도 될 것 같습니다.","오늘은 정리하지 않아도 괜찮을 것 같습니다.",
-      "서두르지 않는 쪽이 편할 것 같습니다.","지금의 선택을 유지해도 충분할 것 같습니다.","결정을 나누어 해도 괜찮을 것 같습니다.","굳이 증명하지 않아도 될 것 같습니다."
-    ];
-
-    const DIRECTION = [
-      "유지하는 선택이 편할 것 같습니다.","굳이 앞에 나서지 않아도 괜찮을 것 같습니다.","더 보태지 않아도 충분할 것 같습니다.","말을 줄이는 쪽이 나을 것 같습니다.",
-      "지금 상태를 지키는 편이 무난할 것 같습니다.","흐름을 끊지 않는 선택이 좋을 것 같습니다.","조용히 지나가는 쪽이 편할 것 같습니다.","무리하지 않는 방향이 잘 맞을 것 같습니다.",
-      "지금의 리듬을 유지하는 게 좋을 것 같습니다.","앞서기보다는 맞추는 쪽이 나을 것 같습니다.","서두르지 않는 태도가 어울릴 것 같습니다.","방향을 크게 바꾸지 않는 게 좋을 것 같습니다.",
-      "잠시 멈추는 선택이 편할 것 같습니다.","여백을 남기는 쪽이 나을 것 같습니다.","지금 상태를 그대로 두는 게 좋을 것 같습니다.","굳이 나서지 않는 태도가 어울릴 것 같습니다."
-    ];
-
-    const TONES = ["REST","HOLD","FLOW","MOVE"];
-    function sliceByTone(arr, tone){
-      const idx = TONES.indexOf(tone);
-      const chunk = Math.max(1, Math.floor(arr.length / 4));
-      const start = idx * chunk;
-      const end = (idx === 3) ? arr.length : Math.min(arr.length, start + chunk);
-      return arr.slice(start, end);
-    }
-
-    const PROFILE_KEY = "hannal_profile";
-    function saveProfile(p){ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }
-    function loadProfile(){
-      const raw = localStorage.getItem(PROFILE_KEY);
-      if(!raw) return null;
-      try { return JSON.parse(raw); } catch { return null; }
-    }
-    function buildBirthKey(p){
-      const y = String(p.y).padStart(4,"0");
-      const m = pad2(p.m);
-      const d = pad2(p.d);
-      if(!p.timeKnown) return `${y}${m}${d}`;
-      const hh = pad2(p.hour);
-      return `${y}${m}${d}${hh}00`;
-    }
-
-    function render(profile){
-      const birthKey = buildBirthKey(profile);
-      const seed = `${birthKey}_${todayKey()}`;
-      const tone = decideTone(profile);
-      const score = scoreFromTone(seed, tone);
-
-      const S = sliceByTone(STATE, tone);
-      const C = sliceByTone(CHOICE, tone);
-      const D = sliceByTone(DIRECTION, tone);
-
-      document.getElementById("todayDate").innerText = todayKorean();
-      document.getElementById("score").innerText = score;
-      document.getElementById("scoreDesc").innerText = scoreOneLine(score);
-      document.getElementById("line1").innerText = pick(S, seed, "_S");
-      document.getElementById("line2").innerText = pick(C, seed, "_C");
-      document.getElementById("direction").innerText = pick(D, seed, "_D");
-    }
-
-    // UI
-    const form = document.getElementById("registerForm");
-    const unknownTime = document.getElementById("unknownTime");
-    const hourInput = document.getElementById("hour");
-    const pageRegister = document.getElementById("pageRegister");
-    const pageFortune = document.getElementById("pageFortune");
-    const pageEnd = document.getElementById("pageEnd");
-    const registerTitle = document.getElementById("registerTitle");
-    const cancelBtn = document.getElementById("cancelBtn");
-    const editBtn = document.getElementById("editBtn");
-
-    function setTimeInputsState(){
-      const disabled = unknownTime.checked;
-      hourInput.disabled = disabled;
-      if(disabled) hourInput.value = "";
-    }
-    unknownTime.addEventListener("change", setTimeInputsState);
-
-    function isValidDate(y,m,d){
-      const dt = new Date(y, m-1, d);
-      return dt.getFullYear()===y && dt.getMonth()===(m-1) && dt.getDate()===d;
-    }
-
-    function fillForm(p){
-      document.getElementById("year").value = p.y;
-      document.getElementById("month").value = pad2(p.m);
-      document.getElementById("day").value = pad2(p.d);
-      unknownTime.checked = !p.timeKnown;
-      setTimeInputsState();
-      hourInput.value = p.timeKnown ? pad2(p.hour) : "";
-    }
-
-    function enableAfterSave(profile){
-      // ✅ 저장 후: 운세/마지막 활성화
-      pageFortune.classList.remove("hidden");
-      pageEnd.classList.remove("hidden");
-      render(profile);
-
-      // ✅ 저장 후: 입력 페이지는 완전히 숨김(위로 스크롤해도 안 보임)
-      pageRegister.classList.add("hidden");
-      registerTitle.textContent = "생년월일시를 한 번만 적어두면 됩니다.";
-      cancelBtn.classList.add("hidden");
-    }
-
-    function enterEditMode(saved){
-      // ✅ 버튼 눌렀을 때만 입력 페이지 다시 나타남
-      pageRegister.classList.remove("hidden");
-      registerTitle.textContent = "정보수정";
-      cancelBtn.classList.remove("hidden");
-      fillForm(saved);
-
-      // ✅ 자동으로 위로 스크롤(입력 페이지로)
-      pageRegister.scrollIntoView({ behavior:"smooth", block:"start" });
-    }
-
-    cancelBtn.addEventListener("click", ()=>{
-      const saved = loadProfile();
-      if (!saved) return;
-
-      // ✅ 그대로 둘게요: 입력 페이지 다시 숨김 + 운세로 돌아가기
-      pageRegister.classList.add("hidden");
-      cancelBtn.classList.add("hidden");
-      registerTitle.textContent = "생년월일시를 한 번만 적어두면 됩니다.";
-      pageFortune.scrollIntoView({ behavior:"smooth", block:"start" });
-    });
-
-    editBtn.addEventListener("click", ()=>{
-      const saved = loadProfile();
-      if(saved) enterEditMode(saved);
-    });
-
-    form.classList.add("show");
-    setTimeInputsState();
-
-    form.addEventListener("submit", (e)=>{
-      e.preventDefault();
-
-      const y = parseInt(document.getElementById("year").value, 10);
-      const m = parseInt(document.getElementById("month").value, 10);
-      const d = parseInt(document.getElementById("day").value, 10);
-
-      if(!y || !m || !d || !isValidDate(y,m,d)){
-        alert("생년월일을 다시 확인해주세요.");
-        return;
-      }
-
-      const timeKnown = !unknownTime.checked;
-      let hour = 0;
-
-      if(timeKnown){
-        const h = hourInput.value.trim();
-        if(h === ""){
-          alert("출생시간을 모르면 '출생시간 모름'을 체크해주세요.");
-          return;
-        }
-        hour = parseInt(h, 10);
-        if(Number.isNaN(hour) || hour < 0 || hour > 23){
-          alert("출생시간(시)은 0~23 사이로 입력해주세요.");
-          return;
-        }
-      }
-
-      const profile = { y, m, d, timeKnown, hour };
-      saveProfile(profile);
-
-      // ✅ 저장 후 상태 반영 (입력 페이지는 숨김)
-      enableAfterSave(profile);
-      // 자동 페이지 이동은 하지 않음 — 다음 움직임 의도에서 넘어감
-    });
-
-    // 초기 로드
-    const savedProfile = loadProfile();
-    if(savedProfile){
-      enableAfterSave(savedProfile);
-    }else{
-      // 저장 전엔 운세/마지막은 완전히 숨김
-      pageFortune.classList.add("hidden");
-      pageEnd.classList.add("hidden");
-    }
-  </script>
 </body>
 </html>
