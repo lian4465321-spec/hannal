@@ -6,105 +6,50 @@
 <title>한날</title>
 
 <style>
-/* =================================================
-   THEME VARIABLES
-   ================================================= */
-
-/* Light (default) */
+/* ================= THEME ================= */
 :root{
-  --bg: #f7f4f1;
-
-  --ink: #4a2f24;
-  --ink-70: rgba(74,47,36,.70);
-  --ink-55: rgba(74,47,36,.55);
-  --ink-40: rgba(74,47,36,.40);
-  --ink-25: rgba(74,47,36,.25);
-
-  --radius: 14px;
-  --frameInsetX: 12px;
-  --frameInsetY: 8px;
-  --innerGap: 3px;
-
-  --contentTopPad: 14px;
-  --contentBotPad: 14px;
+  --bg:#f7f4f1;
+  --ink:#4a2f24;
+  --ink70:rgba(74,47,36,.7);
+  --ink50:rgba(74,47,36,.5);
+  --ink30:rgba(74,47,36,.3);
+  --radius:14px;
 }
-
-/* Dark */
 :root[data-theme="dark"]{
-  --bg: #14110f;
-
-  --ink: #e6d6cc;
-  --ink-70: rgba(230,214,204,.70);
-  --ink-55: rgba(230,214,204,.55);
-  --ink-40: rgba(230,214,204,.40);
-  --ink-25: rgba(230,214,204,.25);
+  --bg:#14110f;
+  --ink:#e6d6cc;
+  --ink70:rgba(230,214,204,.7);
+  --ink50:rgba(230,214,204,.5);
+  --ink30:rgba(230,214,204,.3);
 }
 
-/* =================================================
-   BASE
-   ================================================= */
 html,body{margin:0;height:100%}
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
   background:var(--bg);
   color:var(--ink);
-  line-height:1.7;                 /* 🔧 글씨 커 보이던 부분 조정 */
-  overflow-y:auto;
+  line-height:1.6;
   overscroll-behavior-y:none;
-  -webkit-overflow-scrolling:touch;
-  scroll-behavior:smooth;
 }
 
-/* =================================================
-   DOUBLE FRAME
-   ================================================= */
-body::before,
-body::after{
+/* ================= DOUBLE FRAME ================= */
+body::before,body::after{
   content:"";
   position:fixed;
   pointer-events:none;
-  z-index:50;
   border-radius:var(--radius);
+  z-index:50;
 }
-
 body::before{
-  top:calc(var(--frameInsetY) + env(safe-area-inset-top));
-  bottom:calc(var(--frameInsetY) + env(safe-area-inset-bottom));
-  left:calc(var(--frameInsetX) + env(safe-area-inset-left));
-  right:calc(var(--frameInsetX) + env(safe-area-inset-right));
+  top:8px;bottom:8px;left:12px;right:12px;
   border:1px solid var(--ink);
 }
-
 body::after{
-  top:calc(var(--frameInsetY) + var(--innerGap) + env(safe-area-inset-top));
-  bottom:calc(var(--frameInsetY) + var(--innerGap) + env(safe-area-inset-bottom));
-  left:calc(var(--frameInsetX) + var(--innerGap) + env(safe-area-inset-left));
-  right:calc(var(--frameInsetX) + var(--innerGap) + env(safe-area-inset-right));
-  border:1px solid var(--ink-55);
+  top:11px;bottom:11px;left:15px;right:15px;
+  border:1px solid var(--ink50);
 }
 
-/* =================================================
-   TOP BUTTON
-   ================================================= */
-.topRight{
-  position:fixed;
-  top:calc(14px + env(safe-area-inset-top));
-  right:calc(14px + env(safe-area-inset-right));
-  z-index:60;
-}
-.chip{
-  border:1px solid var(--ink-25);
-  background:transparent;
-  color:var(--ink);
-  border-radius:999px;
-  padding:8px 12px;
-  font-size:12px;
-  cursor:pointer;
-}
-
-/* =================================================
-   PAGE LAYOUT
-   ================================================= */
+/* ================= LAYOUT ================= */
 .page{
   height:100svh;
   display:flex;
@@ -114,25 +59,32 @@ body::after{
 .container{
   width:100%;
   max-width:420px;
+  padding:20px;
   box-sizing:border-box;
-  padding:
-    calc(var(--contentTopPad) + env(safe-area-inset-top))
-    calc(20px + env(safe-area-inset-right))
-    calc(var(--contentBotPad) + env(safe-area-inset-bottom))
-    calc(20px + env(safe-area-inset-left));
 }
 
-/* =================================================
-   INTRO
-   ================================================= */
-.intro{text-align:center}
-.brand{font-size:30px;letter-spacing:1px}
-.tagline{font-size:14px;color:var(--ink-70);margin-top:10px}
-.scroll-hint{margin-top:40px;font-size:12px;color:var(--ink-40)}
+/* ================= TOP ================= */
+.topRight{
+  position:fixed;
+  top:14px;right:14px;
+  z-index:60;
+}
+.chip{
+  border:1px solid var(--ink30);
+  background:transparent;
+  color:var(--ink);
+  border-radius:999px;
+  padding:6px 12px;
+  font-size:12px;
+}
 
-/* =================================================
-   REGISTER
-   ================================================= */
+/* ================= INTRO ================= */
+.intro{text-align:center}
+.brand{font-size:28px}
+.tagline{font-size:14px;color:var(--ink70);margin-top:8px}
+.scroll-hint{margin-top:32px;font-size:12px;color:var(--ink50)}
+
+/* ================= REGISTER ================= */
 #pageRegister .container{
   display:flex;
   flex-direction:column;
@@ -141,98 +93,92 @@ body::after{
 
 .register-title{
   text-align:center;
-  font-size:15px;
-  color:var(--ink-70);
-  margin-bottom:18px;
+  font-size:14px;
+  color:var(--ink70);
+  margin-bottom:14px;
 }
 
+/* 🔧 입력칸 크기 축소 */
 .birth-row{
   display:flex;
   justify-content:space-between;
-  gap:8px;
-  margin-bottom:14px;
+  gap:6px;
+  margin-bottom:8px;
 }
-.birth-item{display:flex;align-items:center;gap:4px}
+.birth-item{
+  display:flex;
+  align-items:center;
+  gap:3px;
+}
 .birth-item input{
-  width:56px;
-  padding:10px 8px;
+  width:50px;
+  padding:7px 6px;
+  font-size:14px;
   text-align:center;
-  border-radius:10px;
-  border:1px solid var(--ink-25);
+  border-radius:8px;
+  border:1px solid var(--ink30);
   background:transparent;
   color:var(--ink);
-  font-size:16px; /* iOS 줌 방지 */
 }
-.birth-item span{font-size:13px;color:var(--ink-70)}
+.birth-item span{
+  font-size:12px;
+  color:var(--ink70);
+}
 
+/* 🔧 출생시간 모름 위치 고정 */
 .time-unknown{
   display:flex;
   justify-content:center;
-  gap:8px;
-  font-size:14px;
-  color:var(--ink-70);
-  margin-bottom:12px;
+  align-items:center;
+  gap:6px;
+  font-size:13px;
+  color:var(--ink70);
+  margin-bottom:10px;
 }
 
-.actions{display:grid;gap:10px;margin-top:10px}
-button.primary,
-button.secondary{
-  border:1px solid var(--ink-25);
+/* 🔧 버튼도 살짝 축소 */
+.actions{
+  display:grid;
+  gap:8px;
+}
+button.primary,button.secondary{
+  padding:9px;
+  font-size:14px;
+  border-radius:10px;
+  border:1px solid var(--ink30);
   background:transparent;
   color:var(--ink);
-  border-radius:12px;
-  padding:12px;
-  font-size:15px;
 }
 
 .small{
+  margin-top:8px;
   text-align:center;
-  font-size:12px;
-  color:var(--ink-40);
-  margin-top:10px;
+  font-size:11px;
+  color:var(--ink50);
 }
 
-/* =================================================
-   FORTUNE
-   ================================================= */
+/* ================= FORTUNE ================= */
 .fortune{text-align:center}
-.date{font-size:14px;color:var(--ink-70)}
-.score{margin-top:10px;font-size:18px}
-.score-desc{font-size:14px;color:var(--ink-70);margin-top:6px}
-
-.fortune-text{
-  margin-top:90px;
-  font-size:16px;        /* 🔧 줄임 */
-}
-.fortune-text p{margin:0 0 26px 0}
-
-.direction{
-  margin-top:90px;
-  font-size:14.5px;      /* 🔧 줄임 */
-}
-.direction-head{color:var(--ink-70);margin-bottom:10px}
+.date{font-size:13px;color:var(--ink70)}
+.score{margin-top:8px;font-size:17px}
+.score-desc{font-size:13px;color:var(--ink70)}
+.fortune-text{margin-top:60px;font-size:15px}
+.fortune-text p{margin:0 0 20px 0}
+.direction{margin-top:60px;font-size:14px}
+.direction-head{margin-bottom:8px;color:var(--ink70)}
 
 .mini-link{
-  margin-top:60px;
+  margin-top:40px;
   font-size:12px;
-  color:var(--ink-40);
 }
 .mini-link button{
-  border:0;
   background:none;
-  color:var(--ink);
+  border:0;
   text-decoration:underline;
-  font-size:12px;
-  cursor:pointer;
+  color:var(--ink);
 }
 
-.ending{
-  text-align:center;
-  font-size:13px;
-  color:var(--ink-40);
-  letter-spacing:1px;
-}
-
+.ending{text-align:center;font-size:12px;color:var(--ink50)}
 .hidden{display:none!important}
 </style>
 </head>
@@ -254,16 +200,24 @@ button.secondary{
 <section class="page" id="pageRegister">
   <div class="container">
     <div class="register-title">생년월일시를 한 번만 적어두면 됩니다.</div>
-    <form>
+
+    <form id="registerForm">
       <div class="birth-row">
-        <div class="birth-item"><input placeholder="1999"><span>년</span></div>
-        <div class="birth-item"><input placeholder="07"><span>월</span></div>
-        <div class="birth-item"><input placeholder="21"><span>일</span></div>
-        <div class="birth-item"><input placeholder="15"><span>시</span></div>
+        <div class="birth-item"><input id="y" placeholder="1999"><span>년</span></div>
+        <div class="birth-item"><input id="m" placeholder="07"><span>월</span></div>
+        <div class="birth-item"><input id="d" placeholder="21"><span>일</span></div>
+        <div class="birth-item"><input id="h" placeholder="15"><span>시</span></div>
       </div>
+
+      <div class="time-unknown">
+        <input type="checkbox" id="unknown">
+        <label for="unknown">출생시간 모름</label>
+      </div>
+
       <div class="actions">
-        <button class="primary">저장하고 오늘 보기</button>
+        <button class="primary" type="submit">저장하고 오늘 보기</button>
       </div>
+
       <div class="small">저장은 이 기기 안에만 됩니다.</div>
     </form>
   </div>
@@ -271,7 +225,7 @@ button.secondary{
 
 <section class="page hidden" id="pageFortune">
   <div class="container fortune">
-    <div class="date">2026년 2월 6일</div>
+    <div class="date">오늘</div>
     <div class="score">오늘의 흐름 점수 72점</div>
     <div class="score-desc">크게 흔들리지 않는 흐름인 것 같습니다.</div>
 
@@ -286,7 +240,7 @@ button.secondary{
     </div>
 
     <div class="mini-link">
-      <button>정보 바꾸기</button>
+      <button id="editBtn">정보 바꾸기</button>
     </div>
   </div>
 </section>
@@ -296,25 +250,27 @@ button.secondary{
 </section>
 
 <script>
-/* ================= THEME ================= */
-const themeBtn = document.getElementById("themeBtn");
-const root = document.documentElement;
+/* ===== THEME ===== */
+const themeBtn=document.getElementById("themeBtn");
+const root=document.documentElement;
+themeBtn.onclick=()=>{
+  root.dataset.theme=root.dataset.theme==="dark"?"light":"dark";
+  themeBtn.textContent=root.dataset.theme==="dark"?"라이트모드":"다크모드";
+};
 
-function currentTheme(){
-  return root.getAttribute("data-theme") || "light";
-}
-function updateThemeBtn(){
-  themeBtn.textContent =
-    currentTheme() === "dark" ? "라이트모드" : "다크모드";
-}
-themeBtn.addEventListener("click",()=>{
-  root.setAttribute(
-    "data-theme",
-    currentTheme() === "dark" ? "light" : "dark"
-  );
-  updateThemeBtn();
+/* ===== REGISTER → FORTUNE ===== */
+const form=document.getElementById("registerForm");
+const reg=document.getElementById("pageRegister");
+const fortune=document.getElementById("pageFortune");
+const end=document.getElementById("pageEnd");
+
+form.addEventListener("submit",e=>{
+  e.preventDefault();
+  reg.classList.add("hidden");
+  fortune.classList.remove("hidden");
+  end.classList.remove("hidden");
+  fortune.scrollIntoView({behavior:"smooth"});
 });
-updateThemeBtn();
 </script>
 
 </body>
