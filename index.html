@@ -1,753 +1,321 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>한날</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>한날</title>
 
-  <style>
-    /* ================== Color (Deep Brown) ================== */
-    :root{
-      --bg: #f7f4f1;
+<style>
+/* =================================================
+   THEME VARIABLES
+   ================================================= */
 
-      --ink: #4a2f24;                /* 진한 고동색 */
-      --ink-70: rgba(74,47,36,.70);
-      --ink-55: rgba(74,47,36,.55);
-      --ink-40: rgba(74,47,36,.40);
-      --ink-25: rgba(74,47,36,.25);
+/* Light (default) */
+:root{
+  --bg: #f7f4f1;
 
-      --radius: 14px;
+  --ink: #4a2f24;
+  --ink-70: rgba(74,47,36,.70);
+  --ink-55: rgba(74,47,36,.55);
+  --ink-40: rgba(74,47,36,.40);
+  --ink-25: rgba(74,47,36,.25);
 
-      --frameInsetX: 12px;  /* 좌/우 */
-      --frameInsetY: 8px;   /* 위/아래 */
+  --radius: 14px;
+  --frameInsetX: 12px;
+  --frameInsetY: 8px;
+  --innerGap: 3px;
 
-      --innerGap: 3px;      /* 이중 프레임 간격 */
+  --contentTopPad: 14px;
+  --contentBotPad: 14px;
+}
 
-      --field-bg: transparent;
-      --field-border: rgba(74,47,36,.28);
+/* Dark */
+:root[data-theme="dark"]{
+  --bg: #14110f;
 
-      --btn-border: rgba(74,47,36,.28);
-      --btn-bg: transparent;
+  --ink: #e6d6cc;
+  --ink-70: rgba(230,214,204,.70);
+  --ink-55: rgba(230,214,204,.55);
+  --ink-40: rgba(230,214,204,.40);
+  --ink-25: rgba(230,214,204,.25);
+}
 
-      /* 페이지 상단 콘텐츠가 프레임에 닿지 않도록 여유 */
-      --contentTopPad: 14px;
-      --contentBotPad: 14px;
-    }
+/* =================================================
+   BASE
+   ================================================= */
+html,body{margin:0;height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.7;                 /* 🔧 글씨 커 보이던 부분 조정 */
+  overflow-y:auto;
+  overscroll-behavior-y:none;
+  -webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth;
+}
 
-    html, body { height: 100%; }
-    body{
-      margin:0;
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      line-height: 1.85;
+/* =================================================
+   DOUBLE FRAME
+   ================================================= */
+body::before,
+body::after{
+  content:"";
+  position:fixed;
+  pointer-events:none;
+  z-index:50;
+  border-radius:var(--radius);
+}
 
-      overflow-y: auto;
-      overscroll-behavior-y: none;
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
-    }
+body::before{
+  top:calc(var(--frameInsetY) + env(safe-area-inset-top));
+  bottom:calc(var(--frameInsetY) + env(safe-area-inset-bottom));
+  left:calc(var(--frameInsetX) + env(safe-area-inset-left));
+  right:calc(var(--frameInsetX) + env(safe-area-inset-right));
+  border:1px solid var(--ink);
+}
 
-    /* ================== Double Frame (viewport) ================== */
-    body::before,
-    body::after{
-      content:"";
-      position: fixed;
-      pointer-events: none;
-      z-index: 50;
-      border-radius: var(--radius);
-    }
+body::after{
+  top:calc(var(--frameInsetY) + var(--innerGap) + env(safe-area-inset-top));
+  bottom:calc(var(--frameInsetY) + var(--innerGap) + env(safe-area-inset-bottom));
+  left:calc(var(--frameInsetX) + var(--innerGap) + env(safe-area-inset-left));
+  right:calc(var(--frameInsetX) + var(--innerGap) + env(safe-area-inset-right));
+  border:1px solid var(--ink-55);
+}
 
-    /* outer */
-    body::before{
-      top: calc(var(--frameInsetY) + env(safe-area-inset-top));
-      bottom: calc(var(--frameInsetY) + env(safe-area-inset-bottom));
-      left: calc(var(--frameInsetX) + env(safe-area-inset-left));
-      right: calc(var(--frameInsetX) + env(safe-area-inset-right));
-      border: 1px solid var(--ink);
-    }
+/* =================================================
+   TOP BUTTON
+   ================================================= */
+.topRight{
+  position:fixed;
+  top:calc(14px + env(safe-area-inset-top));
+  right:calc(14px + env(safe-area-inset-right));
+  z-index:60;
+}
+.chip{
+  border:1px solid var(--ink-25);
+  background:transparent;
+  color:var(--ink);
+  border-radius:999px;
+  padding:8px 12px;
+  font-size:12px;
+  cursor:pointer;
+}
 
-    /* inner */
-    body::after{
-      top: calc(var(--frameInsetY) + var(--innerGap) + env(safe-area-inset-top));
-      bottom: calc(var(--frameInsetY) + var(--innerGap) + env(safe-area-inset-bottom));
-      left: calc(var(--frameInsetX) + var(--innerGap) + env(safe-area-inset-left));
-      right: calc(var(--frameInsetX) + var(--innerGap) + env(safe-area-inset-right));
-      border: 1px solid var(--ink-55);
-    }
+/* =================================================
+   PAGE LAYOUT
+   ================================================= */
+.page{
+  height:100svh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.container{
+  width:100%;
+  max-width:420px;
+  box-sizing:border-box;
+  padding:
+    calc(var(--contentTopPad) + env(safe-area-inset-top))
+    calc(20px + env(safe-area-inset-right))
+    calc(var(--contentBotPad) + env(safe-area-inset-bottom))
+    calc(20px + env(safe-area-inset-left));
+}
 
-    /* ================== Top-right button ================== */
-    .topRight{
-      position: fixed;
-      z-index: 60;
-      top: calc(14px + env(safe-area-inset-top));
-      right: calc(14px + env(safe-area-inset-right));
-    }
-    .chip{
-      border: 1px solid var(--btn-border);
-      background: var(--btn-bg);
-      color: var(--ink);
-      border-radius: 999px;
-      padding: 9px 12px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-    .chip:active{ opacity: .86; }
+/* =================================================
+   INTRO
+   ================================================= */
+.intro{text-align:center}
+.brand{font-size:30px;letter-spacing:1px}
+.tagline{font-size:14px;color:var(--ink-70);margin-top:10px}
+.scroll-hint{margin-top:40px;font-size:12px;color:var(--ink-40)}
 
-    /* ================== Pages ================== */
-    .page{
-      height: 100svh;
-      height: calc(var(--vh, 1vh) * 100);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
+/* =================================================
+   REGISTER
+   ================================================= */
+#pageRegister .container{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
 
-    .container{
-      width: 100%;
-      max-width: 420px;
-      box-sizing: border-box;
+.register-title{
+  text-align:center;
+  font-size:15px;
+  color:var(--ink-70);
+  margin-bottom:18px;
+}
 
-      /* safe area + breathing space */
-      padding-left: calc(20px + env(safe-area-inset-left));
-      padding-right: calc(20px + env(safe-area-inset-right));
-      padding-top: calc(var(--contentTopPad) + env(safe-area-inset-top));
-      padding-bottom: calc(var(--contentBotPad) + env(safe-area-inset-bottom));
-    }
+.birth-row{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:14px;
+}
+.birth-item{display:flex;align-items:center;gap:4px}
+.birth-item input{
+  width:56px;
+  padding:10px 8px;
+  text-align:center;
+  border-radius:10px;
+  border:1px solid var(--ink-25);
+  background:transparent;
+  color:var(--ink);
+  font-size:16px; /* iOS 줌 방지 */
+}
+.birth-item span{font-size:13px;color:var(--ink-70)}
 
-    /* ================== Intro ================== */
-    .intro{ text-align:center; }
-    .brand{ font-size: 30px; font-weight: 500; letter-spacing: 1px; }
-    .tagline{ font-size: 14px; color: var(--ink-70); margin-top: 10px; }
-    .scroll-hint{ margin-top: 40px; font-size: 12px; color: var(--ink-40); }
+.time-unknown{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  font-size:14px;
+  color:var(--ink-70);
+  margin-bottom:12px;
+}
 
-    /* ================== Register ================== */
-    .register{ text-align:left; }
-    .register-title{
-      text-align:center;
-      font-size: 15px;
-      color: var(--ink-70);
-      margin-bottom: 18px;
-    }
+.actions{display:grid;gap:10px;margin-top:10px}
+button.primary,
+button.secondary{
+  border:1px solid var(--ink-25);
+  background:transparent;
+  color:var(--ink);
+  border-radius:12px;
+  padding:12px;
+  font-size:15px;
+}
 
-    /* ✅ "틀 유지" + "폼만 중앙" */
-    #pageRegister .container{
-      display: flex;
-      flex-direction: column;
-      justify-content: center; /* 중앙 */
-      gap: 0;
-    }
+.small{
+  text-align:center;
+  font-size:12px;
+  color:var(--ink-40);
+  margin-top:10px;
+}
 
-    .birth-row{
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-    .birth-item{ display:flex; align-items:center; gap:4px; }
-    .birth-item input{
-      width: 56px;
-      padding: 10px 8px;
-      text-align:center;
-      border-radius: 10px;
-      border: 1px solid var(--field-border);
-      background: var(--field-bg);
-      color: var(--ink);
-      font-size: 16px; /* iOS 자동줌 방지 */
-      outline: none;
-      box-sizing: border-box;
-    }
-    .birth-item.time input{ width: 52px; }
-    .birth-item span{ font-size: 13px; color: var(--ink-70); white-space:nowrap; }
+/* =================================================
+   FORTUNE
+   ================================================= */
+.fortune{text-align:center}
+.date{font-size:14px;color:var(--ink-70)}
+.score{margin-top:10px;font-size:18px}
+.score-desc{font-size:14px;color:var(--ink-70);margin-top:6px}
 
-    .time-unknown{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap: 8px;
-      margin-bottom: 12px;
-      font-size: 14px;
-      color: var(--ink-70);
-    }
-    .time-unknown label{ cursor:pointer; }
+.fortune-text{
+  margin-top:90px;
+  font-size:16px;        /* 🔧 줄임 */
+}
+.fortune-text p{margin:0 0 26px 0}
 
-    .actions{
-      display:grid;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    button.primary, button.secondary{
-      width: 100%;
-      border-radius: 12px;
-      padding: 12px 14px;
-      font-size: 15px;
-      cursor:pointer;
+.direction{
+  margin-top:90px;
+  font-size:14.5px;      /* 🔧 줄임 */
+}
+.direction-head{color:var(--ink-70);margin-bottom:10px}
 
-      border: 1px solid var(--btn-border);
-      background: var(--btn-bg);
-      color: var(--ink); /* ✅ 버튼 글씨 = 본문 글씨 */
-    }
-    button.primary:active, button.secondary:active{ opacity:.86; }
+.mini-link{
+  margin-top:60px;
+  font-size:12px;
+  color:var(--ink-40);
+}
+.mini-link button{
+  border:0;
+  background:none;
+  color:var(--ink);
+  text-decoration:underline;
+  font-size:12px;
+  cursor:pointer;
+}
 
-    .small{
-      text-align:center;
-      font-size: 12px;
-      color: var(--ink-40);
-      margin-top: 10px;
-    }
+.ending{
+  text-align:center;
+  font-size:13px;
+  color:var(--ink-40);
+  letter-spacing:1px;
+}
 
-    /* ================== Fortune ================== */
-    .fortune{
-      text-align:center;
-      padding-top: 6vh;
-      padding-bottom: 6vh;
-      box-sizing: border-box;
-    }
-    .date{ font-size: 14px; color: var(--ink-70); }
-    .score{ font-size: 18px; margin-top: 10px; }
-    .score-desc{ font-size: 14px; color: var(--ink-70); margin-top: 6px; }
-
-    .fortune-text{ margin-top: 90px; font-size: 17px; }
-    .fortune-text p{ margin: 0 0 26px 0; }
-
-    .direction{ margin-top: 90px; font-size: 15px; }
-    .direction-head{ margin-bottom: 12px; color: var(--ink-70); }
-    .direction-body{ line-height: 1.9; }
-
-    .mini-link{
-      margin-top: 70px;
-      font-size: 12px;
-      color: var(--ink-40);
-    }
-    .mini-link button{
-      background: none;
-      border: 0;
-      padding: 0;
-      text-decoration: underline;
-      color: var(--ink);
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    .ending{
-      text-align:center;
-      font-size: 13px;
-      color: var(--ink-40);
-      letter-spacing: 1px;
-    }
-
-    .hidden{ display:none !important; }
-  </style>
+.hidden{display:none!important}
+</style>
 </head>
 
 <body>
-  <div class="topRight">
-    <button class="chip" id="themeBtn" type="button">다크모드</button>
+
+<div class="topRight">
+  <button class="chip" id="themeBtn">다크모드</button>
+</div>
+
+<section class="page" id="pageIntro">
+  <div class="container intro">
+    <div class="brand">한날</div>
+    <div class="tagline">nothing more is needed</div>
+    <div class="scroll-hint">아래로 스크롤</div>
   </div>
+</section>
 
-  <!-- 1) Intro -->
-  <section class="page" id="pageIntro">
-    <div class="container intro">
-      <div class="brand">한날</div>
-      <div class="tagline">nothing more is needed</div>
-      <div class="scroll-hint">아래로 스크롤</div>
+<section class="page" id="pageRegister">
+  <div class="container">
+    <div class="register-title">생년월일시를 한 번만 적어두면 됩니다.</div>
+    <form>
+      <div class="birth-row">
+        <div class="birth-item"><input placeholder="1999"><span>년</span></div>
+        <div class="birth-item"><input placeholder="07"><span>월</span></div>
+        <div class="birth-item"><input placeholder="21"><span>일</span></div>
+        <div class="birth-item"><input placeholder="15"><span>시</span></div>
+      </div>
+      <div class="actions">
+        <button class="primary">저장하고 오늘 보기</button>
+      </div>
+      <div class="small">저장은 이 기기 안에만 됩니다.</div>
+    </form>
+  </div>
+</section>
+
+<section class="page hidden" id="pageFortune">
+  <div class="container fortune">
+    <div class="date">2026년 2월 6일</div>
+    <div class="score">오늘의 흐름 점수 72점</div>
+    <div class="score-desc">크게 흔들리지 않는 흐름인 것 같습니다.</div>
+
+    <div class="fortune-text">
+      <p>오늘은 조용한 리듬이 어울리는 날인 것 같습니다.</p>
+      <p>서두르지 않아도 흐름이 이어질 것 같습니다.</p>
     </div>
-  </section>
 
-  <!-- 2) Register -->
-  <section class="page" id="pageRegister">
-    <div class="container register">
-      <div class="register-title" id="registerTitle">생년월일시를 한 번만 적어두면 됩니다.</div>
-
-      <form id="registerForm">
-        <div class="birth-row">
-          <div class="birth-item">
-            <input id="year" inputmode="numeric" placeholder="1999" maxlength="4" required />
-            <span>년</span>
-          </div>
-          <div class="birth-item">
-            <input id="month" inputmode="numeric" placeholder="07" maxlength="2" required />
-            <span>월</span>
-          </div>
-          <div class="birth-item">
-            <input id="day" inputmode="numeric" placeholder="21" maxlength="2" required />
-            <span>일</span>
-          </div>
-          <div class="birth-item time">
-            <input id="hour" inputmode="numeric" placeholder="15" maxlength="2" />
-            <span>시</span>
-          </div>
-        </div>
-
-        <div class="time-unknown">
-          <input type="checkbox" id="unknownTime" />
-          <label for="unknownTime">출생시간 모름</label>
-        </div>
-
-        <div class="actions">
-          <button class="primary" type="submit" id="saveBtn">저장하고 오늘 보기</button>
-          <button class="secondary hidden" type="button" id="cancelBtn">그대로 둘게요</button>
-        </div>
-
-        <div class="small">저장은 이 기기(브라우저)에만 됩니다.</div>
-      </form>
+    <div class="direction">
+      <div class="direction-head">오늘은</div>
+      <div>유지하는 선택이 편할 것 같습니다.</div>
     </div>
-  </section>
 
-  <!-- 3) Fortune (저장 전 숨김) -->
-  <section class="page hidden" id="pageFortune">
-    <div class="container fortune">
-      <div class="date" id="todayDate"></div>
-
-      <div class="score">
-        오늘의 흐름 점수 <strong id="score"></strong>점
-      </div>
-      <div class="score-desc" id="scoreDesc"></div>
-
-      <div class="fortune-text">
-        <p id="line1"></p>
-        <p id="line2"></p>
-      </div>
-
-      <div class="direction">
-        <div class="direction-head">오늘은</div>
-        <div class="direction-body" id="direction"></div>
-      </div>
-
-      <div class="mini-link">
-        <button type="button" id="editBtn">정보 바꾸기</button>
-      </div>
+    <div class="mini-link">
+      <button>정보 바꾸기</button>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- 4) End (저장 전 숨김) -->
-  <section class="page hidden" id="pageEnd">
-    <div class="container ending">HANNAL</div>
-  </section>
+<section class="page hidden" id="pageEnd">
+  <div class="container ending">HANNAL</div>
+</section>
 
-  <script>
-    /********************
-     * iOS vh 안정화
-     ********************/
-    function setVH(){
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    }
-    setVH();
-    window.addEventListener('resize', setVH);
+<script>
+/* ================= THEME ================= */
+const themeBtn = document.getElementById("themeBtn");
+const root = document.documentElement;
 
-    /********************
-     * 다크/라이트 버튼 (라벨만 명확히)
-     * - 현재 밝으면 "다크모드"
-     * - 현재 어두우면 "라이트모드"
-     ********************/
-    const THEME_KEY = "hannal_theme";
-    const root = document.documentElement;
-    const themeBtn = document.getElementById("themeBtn");
+function currentTheme(){
+  return root.getAttribute("data-theme") || "light";
+}
+function updateThemeBtn(){
+  themeBtn.textContent =
+    currentTheme() === "dark" ? "라이트모드" : "다크모드";
+}
+themeBtn.addEventListener("click",()=>{
+  root.setAttribute(
+    "data-theme",
+    currentTheme() === "dark" ? "light" : "dark"
+  );
+  updateThemeBtn();
+});
+updateThemeBtn();
+</script>
 
-    function effectiveScheme(){
-      const forced = root.getAttribute("data-theme");
-      if (forced === "dark" || forced === "light") return forced;
-      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    }
-    function updateThemeLabel(){
-      themeBtn.textContent = (effectiveScheme() === "dark") ? "라이트모드" : "다크모드";
-    }
-    function setTheme(theme){
-      root.setAttribute("data-theme", theme);
-      localStorage.setItem(THEME_KEY, theme);
-      updateThemeLabel();
-    }
-    const savedTheme = localStorage.getItem(THEME_KEY);
-    if (savedTheme === "dark" || savedTheme === "light") root.setAttribute("data-theme", savedTheme);
-    updateThemeLabel();
-    const mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
-    if (mq && mq.addEventListener) mq.addEventListener("change", updateThemeLabel);
-
-    themeBtn.addEventListener("click", ()=>{
-      setTheme(effectiveScheme() === "dark" ? "light" : "dark");
-    });
-
-    /********************
-     * Fortune util (하루 고정)
-     ********************/
-    function pad2(n){ return String(n).padStart(2,"0"); }
-    function todayKey(){
-      const t = new Date();
-      return `${t.getFullYear()}${pad2(t.getMonth()+1)}${pad2(t.getDate())}`;
-    }
-    function todayKorean(){
-      const t = new Date();
-      return `${t.getFullYear()}년 ${t.getMonth()+1}월 ${t.getDate()}일`;
-    }
-    function seededHash(seed){
-      let hash = 0;
-      for (let i=0;i<seed.length;i++){
-        hash = seed.charCodeAt(i) + ((hash<<5)-hash);
-        hash |= 0;
-      }
-      return Math.abs(hash);
-    }
-    function pick(arr, seed, salt){
-      const v = seededHash(seed + salt);
-      return arr[v % arr.length];
-    }
-    function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
-
-    // (간단 톤) — 기존 흐름 유지용
-    function toJDN(y,m,d){
-      const a = Math.floor((14 - m)/12);
-      const y2 = y + 4800 - a;
-      const m2 = m + 12*a - 3;
-      return d + Math.floor((153*m2 + 2)/5) + 365*y2 + Math.floor(y2/4) - Math.floor(y2/100) + Math.floor(y2/400) - 32045;
-    }
-    function dayStem(y,m,d){
-      const jdn = toJDN(y,m,d);
-      return (jdn + 9) % 10;
-    }
-    function elementOfStem(stem){
-      const group = Math.floor(stem/2);
-      return ["WOOD","FIRE","EARTH","METAL","WATER"][group];
-    }
-    const GEN = { WOOD:"FIRE", FIRE:"EARTH", EARTH:"METAL", METAL:"WATER", WATER:"WOOD" };
-    const CTRL = { WOOD:"EARTH", EARTH:"WATER", WATER:"FIRE", FIRE:"METAL", METAL:"WOOD" };
-    function relation(a,b){
-      if (a===b) return "SAME";
-      if (GEN[a]===b) return "GENERATES";
-      if (CTRL[a]===b) return "CONTROLS";
-      if (GEN[b]===a) return "RECEIVES";
-      if (CTRL[b]===a) return "PRESSURED";
-      return "OTHER";
-    }
-    function decideTone(profile){
-      const birthEl = elementOfStem(dayStem(profile.y, profile.m, profile.d));
-      const t = new Date();
-      const todayEl = elementOfStem(dayStem(t.getFullYear(), t.getMonth()+1, t.getDate()));
-      const rel = relation(birthEl, todayEl);
-      if (rel==="RECEIVES") return "MOVE";
-      if (rel==="CONTROLS") return "FLOW";
-      if (rel==="GENERATES" || rel==="PRESSURED") return "REST";
-      return "HOLD";
-    }
-    function scoreFromTone(seed, tone){
-      const r = seededHash(seed + "_SCORE");
-      const jitter = r % 8;
-      const ranges = { REST:[30,54], HOLD:[50,69], FLOW:[65,84], MOVE:[80,100] };
-      const [lo,hi] = ranges[tone] || [50,69];
-      const v = lo + (r % (hi-lo+1));
-      return clamp(v + (jitter - 3), 30, 100);
-    }
-    function scoreOneLine(score){
-      if (score >= 90) return "방향이 비교적 또렷한 편인 것 같습니다.";
-      if (score >= 75) return "움직인 만큼 반응이 돌아오는 편인 것 같습니다.";
-      if (score >= 60) return "크게 흔들리지 않는 흐름인 것 같습니다.";
-      if (score >= 45) return "무리하지 않으면 흐름이 안정될 것 같습니다.";
-      return "속도를 늦춰도 충분할 것 같습니다.";
-    }
-
-    // 문장 풀 (톤 유지)
-    const STATE = [
-      "천천히 흘러가도 괜찮을 것 같습니다.","조용한 리듬이 어색하지 않은 날인 것 같습니다.","서두르지 않아도 흐름이 끊기지 않을 것 같습니다.","무리하지 않으면 안정적으로 이어질 것 같습니다.",
-      "오늘의 공기는 비교적 가벼운 편인 것 같습니다.","자연스럽게 흘려보내도 무리는 없을 것 같습니다.","오늘은 단순함이 잘 맞을 것 같습니다.","여백이 남아 있는 하루인 것 같습니다.",
-      "오늘의 흐름은 완만한 편인 것 같습니다.","가볍게 정리해도 무리는 없을 것 같습니다.","크게 흔들리지 않는 리듬인 것 같습니다.","오늘은 속도를 조절하기 쉬운 날인 것 같습니다.",
-      "조심스럽게 움직여도 충분할 것 같습니다.","서서히 움직여도 괜찮을 것 같습니다.","오늘은 조정이 가능한 날인 것 같습니다.","부드럽게 이어지는 흐름인 것 같습니다."
-    ];
-    const CHOICE = [
-      "결론을 서두르지 않아도 괜찮을 것 같습니다.","지금 상태를 유지해도 무리는 없을 것 같습니다.","한 박자 늦춰도 괜찮을 것 같습니다.","잠시 미뤄두는 선택도 괜찮을 것 같습니다.",
-      "말을 아껴도 괜찮을 것 같습니다.","판단을 나중에 해도 늦지 않을 것 같습니다.","선택을 최소화해도 충분할 것 같습니다.","굳이 서두를 필요는 없을 것 같습니다.",
-      "한 걸음 물러나도 괜찮을 것 같습니다.","지켜보는 쪽이 나을 것 같습니다.","오늘은 단순하게 두는 편이 나을 것 같습니다.","흐름을 방해하지 않는 쪽이 좋을 것 같습니다.",
-      "오늘은 유지하는 선택이 무난할 것 같습니다.","선택을 줄이는 쪽이 편안할 것 같습니다.","방향을 열어두는 선택이 나을 것 같습니다.","결정을 미뤄두는 쪽이 편할 것 같습니다."
-    ];
-    const DIRECTION = [
-      "유지하는 선택이 편할 것 같습니다.","흐름을 끊지 않는 선택이 좋을 것 같습니다.","조용히 지나가는 쪽이 편할 것 같습니다.","무리하지 않는 방향이 잘 맞을 것 같습니다.",
-      "서두르지 않는 태도가 어울릴 것 같습니다.","지금 상태를 그대로 두는 게 좋을 것 같습니다.","여백을 남기는 쪽이 나을 것 같습니다.","방향을 크게 바꾸지 않는 게 좋을 것 같습니다."
-    ];
-    const TONES = ["REST","HOLD","FLOW","MOVE"];
-    function sliceByTone(arr, tone){
-      const idx = TONES.indexOf(tone);
-      const chunk = Math.max(1, Math.floor(arr.length / 4));
-      const start = idx * chunk;
-      const end = (idx === 3) ? arr.length : Math.min(arr.length, start + chunk);
-      return arr.slice(start, end);
-    }
-
-    /********************
-     * storage
-     ********************/
-    const PROFILE_KEY = "hannal_profile";
-    function saveProfile(p){ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }
-    function loadProfile(){
-      const raw = localStorage.getItem(PROFILE_KEY);
-      if(!raw) return null;
-      try { return JSON.parse(raw); } catch { return null; }
-    }
-    function buildBirthKey(p){
-      const y = String(p.y).padStart(4,"0");
-      const m = pad2(p.m);
-      const d = pad2(p.d);
-      if(!p.timeKnown) return `${y}${m}${d}`;
-      const hh = pad2(p.hour);
-      return `${y}${m}${d}${hh}00`;
-    }
-
-    function render(profile){
-      const seed = `${buildBirthKey(profile)}_${todayKey()}`;
-      const tone = decideTone(profile);
-      const score = scoreFromTone(seed, tone);
-
-      const S = sliceByTone(STATE, tone);
-      const C = sliceByTone(CHOICE, tone);
-      const D = sliceByTone(DIRECTION, tone);
-
-      document.getElementById("todayDate").innerText = todayKorean();
-      document.getElementById("score").innerText = score;
-      document.getElementById("scoreDesc").innerText = scoreOneLine(score);
-      document.getElementById("line1").innerText = pick(S, seed, "_S");
-      document.getElementById("line2").innerText = pick(C, seed, "_C");
-      document.getElementById("direction").innerText = pick(D, seed, "_D");
-    }
-
-    /********************
-     * Pages + precise auto-scroll fix
-     ********************/
-    const pageIntro = document.getElementById("pageIntro");
-    const pageRegister = document.getElementById("pageRegister");
-    const pageFortune = document.getElementById("pageFortune");
-    const pageEnd = document.getElementById("pageEnd");
-
-    const pages = [pageIntro, pageRegister, pageFortune, pageEnd];
-
-    function activePages(){
-      // hidden + display none 모두 제외 (진짜로 "존재하는 페이지"만)
-      return pages.filter(p => !p.classList.contains("hidden") && p.style.display !== "none");
-    }
-
-    // ✅ scrollIntoView 대신 정확한 top 좌표로 이동 (iOS 오차 제거)
-    function scrollToSection(sec, behavior = "smooth"){
-      const top = Math.round(sec.getBoundingClientRect().top + window.scrollY);
-      window.scrollTo({ top, behavior });
-      // iOS에서 가끔 1~2px 밀리는 현상 보정
-      setTimeout(() => {
-        const top2 = Math.round(sec.getBoundingClientRect().top + window.scrollY);
-        if (Math.abs(top2) > 2) {
-          const fixedTop = Math.round(sec.getBoundingClientRect().top + window.scrollY);
-          window.scrollTo({ top: fixedTop, behavior: "auto" });
-        }
-      }, 350);
-    }
-
-    let isAnimating = false;
-    let lastMoveAt = 0;
-
-    // ✅ 현재 페이지 계산도 오차 적게 (offsetTop 대신 rect 기반)
-    function currentPageIndex(){
-      const aps = activePages();
-      let best = 0;
-      let bestAbs = Infinity;
-      for (let i=0;i<aps.length;i++){
-        const r = aps[i].getBoundingClientRect();
-        const abs = Math.abs(r.top);
-        if (abs < bestAbs){
-          bestAbs = abs;
-          best = i;
-        }
-      }
-      return best;
-    }
-
-    // 느린 전환 (요청 반영)
-    const ANIM_LOCK_MS = 1200;
-    const INTENT_COOLDOWN_MS = 1400;
-
-    function goToPage(i){
-      const aps = activePages();
-      const clamped = Math.max(0, Math.min(i, aps.length - 1));
-      isAnimating = true;
-      scrollToSection(aps[clamped], "smooth");
-      setTimeout(() => { isAnimating = false; }, ANIM_LOCK_MS);
-    }
-
-    function isTyping(){
-      const a = document.activeElement;
-      return a && (a.tagName === "INPUT" || a.tagName === "TEXTAREA" || a.isContentEditable);
-    }
-
-    function handleIntent(dir){
-      const now = Date.now();
-      if (isAnimating) return;
-      if (now - lastMoveAt < INTENT_COOLDOWN_MS) return;
-      lastMoveAt = now;
-      const idx = currentPageIndex();
-      goToPage(idx + dir);
-    }
-
-    /* ===== Wheel: 실제 스크롤은 막고, 의도만 감지 ===== */
-    window.addEventListener("wheel", (e)=>{
-      if (isTyping()) return;
-      if (Math.abs(e.deltaY) < 10) return;
-      e.preventDefault();
-      handleIntent(e.deltaY > 0 ? +1 : -1);
-    }, { passive:false });
-
-    /* ===== Touch: 중간 스크롤을 막고, 끝에서만 넘김 ===== */
-    let touchStartY = null;
-    let touchMoved = false;
-
-    window.addEventListener("touchstart", (e)=>{
-      if (isTyping()) return;
-      if (!e.touches || e.touches.length !== 1) return;
-      touchStartY = e.touches[0].clientY;
-      touchMoved = false;
-    }, { passive:true });
-
-    // ✅ 핵심: 사용자가 드래그하는 중 실제 스크롤이 생기지 않도록 막는다
-    window.addEventListener("touchmove", (e)=>{
-      if (isTyping()) return;
-      if (touchStartY === null) return;
-      const y = e.touches[0].clientY;
-      const dy = y - touchStartY;
-      if (Math.abs(dy) > 8){
-        touchMoved = true;
-        e.preventDefault(); // 중간 스크롤 방지
-      }
-    }, { passive:false });
-
-    window.addEventListener("touchend", (e)=>{
-      if (isTyping()) return;
-      if (touchStartY === null) return;
-
-      const endY = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientY : touchStartY;
-      const dy = endY - touchStartY;
-      touchStartY = null;
-
-      if (!touchMoved) return;
-      if (Math.abs(dy) < 35) return;
-      handleIntent(dy < 0 ? +1 : -1);
-    }, { passive:true });
-
-    /********************
-     * Register / Edit flow
-     ********************/
-    const form = document.getElementById("registerForm");
-    const unknownTime = document.getElementById("unknownTime");
-    const hourInput = document.getElementById("hour");
-    const cancelBtn = document.getElementById("cancelBtn");
-    const editBtn = document.getElementById("editBtn");
-    const registerTitle = document.getElementById("registerTitle");
-
-    function setTimeInputsState(){
-      const disabled = unknownTime.checked;
-      hourInput.disabled = disabled;
-      if(disabled) hourInput.value = "";
-    }
-    unknownTime.addEventListener("change", setTimeInputsState);
-
-    function isValidDate(y,m,d){
-      const dt = new Date(y, m-1, d);
-      return dt.getFullYear()===y && dt.getMonth()===(m-1) && dt.getDate()===d;
-    }
-
-    function fillForm(p){
-      document.getElementById("year").value = p.y;
-      document.getElementById("month").value = pad2(p.m);
-      document.getElementById("day").value = pad2(p.d);
-      unknownTime.checked = !p.timeKnown;
-      setTimeInputsState();
-      hourInput.value = p.timeKnown ? pad2(p.hour) : "";
-    }
-
-    function enableAfterSave(profile){
-      pageFortune.classList.remove("hidden");
-      pageEnd.classList.remove("hidden");
-      render(profile);
-
-      // ✅ 저장 후 입력 페이지 완전 제거 (스크롤로 절대 안 보임)
-      pageRegister.classList.add("hidden");
-      pageRegister.style.display = "none";
-      cancelBtn.classList.add("hidden");
-      registerTitle.textContent = "생년월일시를 한 번만 적어두면 됩니다.";
-
-      // 다음 의도 즉시 인식
-      lastMoveAt = 0;
-    }
-
-    function enterEditMode(saved){
-      // ✅ 버튼 눌렀을 때만 입력 페이지 복귀
-      pageRegister.style.display = "flex";
-      pageRegister.classList.remove("hidden");
-      registerTitle.textContent = "정보수정";
-      cancelBtn.classList.remove("hidden");
-      fillForm(saved);
-
-      // ✅ 정확한 스크롤
-      scrollToSection(pageRegister, "smooth");
-    }
-
-    cancelBtn.addEventListener("click", ()=>{
-      const saved = loadProfile();
-      if (!saved) return;
-
-      // 입력 페이지 제거 + 운세로 복귀
-      pageRegister.classList.add("hidden");
-      pageRegister.style.display = "none";
-      cancelBtn.classList.add("hidden");
-      registerTitle.textContent = "생년월일시를 한 번만 적어두면 됩니다.";
-
-      scrollToSection(pageFortune, "smooth");
-    });
-
-    editBtn.addEventListener("click", ()=>{
-      const saved = loadProfile();
-      if(saved) enterEditMode(saved);
-    });
-
-    form.addEventListener("submit", (e)=>{
-      e.preventDefault();
-
-      const y = parseInt(document.getElementById("year").value, 10);
-      const m = parseInt(document.getElementById("month").value, 10);
-      const d = parseInt(document.getElementById("day").value, 10);
-
-      if(!y || !m || !d || !isValidDate(y,m,d)){
-        alert("생년월일을 다시 확인해주세요.");
-        return;
-      }
-
-      const timeKnown = !unknownTime.checked;
-      let hour = 0;
-      if(timeKnown){
-        const h = hourInput.value.trim();
-        if(h === ""){
-          alert("출생시간을 모르면 '출생시간 모름'을 체크해주세요.");
-          return;
-        }
-        hour = parseInt(h, 10);
-        if(Number.isNaN(hour) || hour < 0 || hour > 23){
-          alert("출생시간(시)은 0~23 사이로 입력해주세요.");
-          return;
-        }
-      }
-
-      const profile = { y, m, d, timeKnown, hour };
-      saveProfile(profile);
-
-      enableAfterSave(profile);
-
-      // ✅ 저장 직후엔 "자동으로 밑으로" 내리지 않음.
-      // 대신: 사용자가 다음 스와이프/휠을 하면 즉시 운세로 넘어감(의도 기반)
-    });
-
-    // init
-    setTimeInputsState();
-    const saved = loadProfile();
-    if (saved){
-      enableAfterSave(saved);
-    } else {
-      pageFortune.classList.add("hidden");
-      pageEnd.classList.add("hidden");
-      pageRegister.style.display = "flex";
-    }
-  </script>
 </body>
 </html>
